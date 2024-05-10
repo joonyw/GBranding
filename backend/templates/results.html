@@ -1,0 +1,63 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Results</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .loading {
+      display: block;
+      font-size: 24px;
+    }
+
+    .results {
+      display: none;
+    }
+
+    img {
+      margin: 10px;
+      max-width: 400px;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Results for "{{ submitted_text }}"</h1>
+  <div class="loading" id="loading">Loading images, please wait...</div>
+  <div class="results" id="results">
+    {% for image in images %}
+      <img src="{{ image }}" alt="Result Image">
+    {% endfor %}
+  </div>
+  <script>
+    const loadingElement = document.getElementById("loading");
+    const resultsElement = document.getElementById("results");
+    const images = resultsElement.getElementsByTagName("img");
+    let imagesLoaded = 0;
+
+    for (const img of images) {
+      img.onload = () => {
+        imagesLoaded++;
+        if (imagesLoaded === images.length) {
+          loadingElement.style.display = "none";
+          resultsElement.style.display = "block";
+        }
+      };
+      img.onerror = () => {
+        imagesLoaded++;
+        if (imagesLoaded === images.length) {
+          loadingElement.style.display = "none";
+          resultsElement.style.display = "block";
+        }
+      };
+    }
+  </script>
+</body>
+</html>
