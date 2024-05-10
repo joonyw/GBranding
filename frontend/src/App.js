@@ -1,8 +1,11 @@
 // src/App.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navigation from './Navigation';
+import Home from './Home';
 import ImageDisplay from './ImageDisplay';
+import './App.css';
 
 function App() {
   const [text, setText] = useState('');
@@ -10,20 +13,28 @@ function App() {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const fetchImage = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
+      // Submit text and receive a message
       const result = await axios.post('/submit', { text });
-      setResponse(result.data.message); 
+      setResponse(result.data.message);
+
+      // Fetch the image
       const response = await fetch('/get-image');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
       const blob = await response.blob();
       const imageObjectURL = URL.createObjectURL(blob);
       setImage(imageObjectURL);
+
+      // Mark as submitted
+      setSubmitted(true);
     } catch (error) {
       setError('Failed to load image');
     } finally {
@@ -32,28 +43,36 @@ function App() {
   };
 
   return (
+    
     <div className="App">
+      <Router>
+      <Navigation />
+      <Routes>
+        <Route exact path="/" component={Home} />
+        <Route path="/fetch-image" component={ImageDisplay} />
+      </Routes>
+    </Router>
       <header className="App-header">
         <h1>GBranding</h1>
-        {/* <form onSubmit={handleSubmit}> */}
-          <input
-            type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="주제"
-          />
-          {/* <button type="submit">Submit</button> */}
-
-      <button onClick={fetchImage} disabled={loading}>
-        {loading ? 'Loading...' : 'Fetch Image'}
-      </button>
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {image && <img src={image} alt="Server Image" style={{ maxWidth: '100%', maxHeight: '100%' }} />}
-
-        {/* </form> */}
-        {/* <ImageDisplay /> */}
-        {response && <p>{response}</p>}
+        {!submitted ? (
+          <form onSubmit={fetchImage}>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Enter some text"
+            />
+            <button type="submit" disabled={loading}>
+              {loading ? 'Loading...' : 'Fetch Image'}
+            </button>
+          </form>
+        ) : (
+          <>
+            {response && <p>{response}</p>}
+            {image && <img src={image} alt="Server Image" style={{ maxWidth: '100%', maxHeight: '100%' }} />}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+          </>
+        )}
       </header>
     </div>
   );
