@@ -1,61 +1,49 @@
-// src/App.js
+// src/ImageDisplay.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navigation from './Navigation';
-import Home from './Home';
-import ImageDisplay from './ImageDisplay';
 import './App.css';
 
-function App() {
+function ImageDisplay() {
   const [text, setText] = useState('');
   const [response, setResponse] = useState('');
   const [image, setImage] = useState(null);
+  const [audio, setAudio] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const fetchImage = async (e) => {
+  const fetchMedia = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      // Submit text and receive a message
       const result = await axios.post('/submit', { text });
       setResponse(result.data.message);
 
-      // Fetch the image
-      const response = await fetch('/get-image');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const blob = await response.blob();
-      const imageObjectURL = URL.createObjectURL(blob);
-      setImage(imageObjectURL);
+      const imageResponse = await fetch('/get-image');
+      if (!imageResponse.ok) throw new Error('Image load failed');
+      const blobImage = await imageResponse.blob();
+      setImage(URL.createObjectURL(blobImage));
 
-      // Mark as submitted
+      const audioResponse = await fetch('/get-audio');
+      if (!audioResponse.ok) throw new Error('Audio load failed');
+      const blobAudio = await audioResponse.blob();
+      setAudio(URL.createObjectURL(blobAudio));
+
       setSubmitted(true);
     } catch (error) {
-      setError('Failed to load image');
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    
     <div className="App">
-      <Router>
-      <Navigation />
-      <Routes>
-        <Route exact path="/" component={Home} />
-        <Route path="/fetch-image" component={ImageDisplay} />
-      </Routes>
-    </Router>
       <header className="App-header">
         <h1>GBranding</h1>
         {!submitted ? (
-          <form onSubmit={fetchImage}>
+          <form onSubmit={fetchMedia}>
             <input
               type="text"
               value={text}
@@ -63,13 +51,14 @@ function App() {
               placeholder="Enter some text"
             />
             <button type="submit" disabled={loading}>
-              {loading ? 'Loading...' : 'Fetch Image'}
+              {loading ? 'Loading...' : 'Fetch Media'}
             </button>
           </form>
         ) : (
           <>
             {response && <p>{response}</p>}
             {image && <img src={image} alt="Server Image" style={{ maxWidth: '100%', maxHeight: '100%' }} />}
+            {audio && <audio controls src={audio} autoPlay />}
             {error && <p style={{ color: 'red' }}>{error}</p>}
           </>
         )}
@@ -78,4 +67,4 @@ function App() {
   );
 }
 
-export default App;
+export default ImageDisplay;

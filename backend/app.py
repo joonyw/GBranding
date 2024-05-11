@@ -16,11 +16,16 @@ def submit_text():
     data = request.json
     submitted_text = data.get('text', '')
     response_text = create_scenario(submitted_text)
+    speech(response_text)
     get_pic(response_text)
     response = {
         'message': f'You submitted: {response_text}'
     }
     return jsonify(response)
+@app.route('/get-audio', methods=['GET'])
+def get_audio():
+    return send_from_directory('./', 'speech.mp3', as_attachment=False)
+
 
 # Endpoint to serve the image
 @app.route('/get-image')
