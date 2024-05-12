@@ -12,7 +12,6 @@ def serve():
 
 @app.route('/submit', methods=['POST'])
 def submit_text():
-    print("A")
     data = request.json
     submitted_text = data.get('text', '')
     response_text = create_scenario(submitted_text)
@@ -22,18 +21,12 @@ def submit_text():
         'message': f'You submitted: {response_text}'
     }
     return jsonify(response)
-@app.route('/get-audio', methods=['GET'])
-def get_audio():
-    return send_from_directory('./', 'speech.mp3', as_attachment=False)
 
-
-# Endpoint to serve the image
-@app.route('/get-image')
-def get_image():
-    print("R")
-    image_path = os.path.join(os.getcwd(), 'generated_image.jpeg')  # Adjust the image path accordingly
-    return send_file(image_path, mimetype='image/jpeg')
-
+@app.route('/get-video', methods=['GET'])
+def get_video():
+    # Here we are assuming that the video file is stored under `video/example.mp4`
+    make_video("./images", "./speech.mp3", "output_video.mp4",0.1)
+    return send_from_directory('./', 'output.mp4', as_attachment=False)
 @app.errorhandler(404)
 def not_found(e):
     return send_from_directory(app.static_folder, 'index.html')
