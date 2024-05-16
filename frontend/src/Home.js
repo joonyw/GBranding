@@ -6,7 +6,7 @@ function Home() {
     <div className="App">
       <header className="App-header">
         <h1>Welcome to GBranding</h1>
-        <p>Navigate to the "Fetch Image" page to start!</p>
+        <p>Navigate to the "Fetch Video" page to start!</p>
       </header>
     </div>
   );

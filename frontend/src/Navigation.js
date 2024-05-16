@@ -8,7 +8,9 @@ function Navigation() {
     <nav className="Navigation">
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/fetch-image">Fetch Image</Link></li>
+        <li><Link to="/login">Login</Link></li>
+        <li><Link to="/register">Register</Link></li>
+        <li><Link to="/fetch-video">Fetch Video</Link></li>
       </ul>
     </nav>
   );
