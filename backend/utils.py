@@ -13,7 +13,7 @@ def create_scenario(usr_input):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "write a short scenario within less than 800 characters in length according to the following subject:" + usr_input},
+        {"role": "system", "content": "write a short scenario within less than 700 characters in length according to the following subject:" + usr_input},
     ]
     )
     return (response.choices[0].message.content)
