@@ -76,7 +76,7 @@ def submit_text():
     speech(response_text)
     get_pic(response_text)
     response = {
-        'message': f'You submitted: {response_text}'
+        'message': response_text
     }
     print("ASDF")
     return jsonify(response)
