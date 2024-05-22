@@ -75,6 +75,7 @@ def submit_text():
     response_text = create_scenario(submitted_text)
     speech(response_text)
     get_pic(response_text)
+    get_brand(response_text)
     response = {
         'message': response_text
     }
@@ -84,7 +85,7 @@ def submit_text():
 @app.route('/get-video', methods=['GET'])
 @login_required
 def get_video():
-    return send_from_directory('./', 'output.mp4', as_attachment=False)
+    # return send_from_directory('./', 'output.mp4', as_attachment=False)
     make_video("./images", "./speech.mp3", "output_video.mp4",0.1)
     return send_from_directory('./', 'output.mp4', as_attachment=False)
 

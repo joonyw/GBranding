@@ -13,11 +13,28 @@ def create_scenario(usr_input):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "write a short scenario within less than 700 characters in length according to the following subject:" + usr_input},
+        {"role": "system", "content": "write a short scenario within less than 700 characters in length according to the following subject in korean:" + usr_input},
     ]
     )
     return (response.choices[0].message.content)
 
+def get_brand(resp):
+    from openai import OpenAI
+
+    client = openai.OpenAI(api_key = OPEN_API_KEY,)
+    sent = "Draw up a brand logo that fits this scenario: " + resp
+    image_name = "./images/brand.jpg"
+    response = client.images.generate(
+        model="dall-e-2",
+        prompt=sent,
+        size="1024x1024",
+        quality="standard",
+        n=1,
+    )
+
+    image_url = response.data[0].url
+    urllib.request.urlretrieve(image_url, image_name)
+    return
 
 def get_pic(resp):
     from openai import OpenAI
