@@ -1,100 +1,108 @@
-/* src/App.css */
-html, body, #root {
-  height: 100%;
+* {
   margin: 0;
   padding: 0;
-  width: 100%;
+  box-sizing: border-box;
 }
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  width: 100%;
-}
-
-h1 {
-  color: #343a40;
-}
-
-nav {
-  margin-bottom: 20px;
-}
-
-nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-nav ul li {
-  display: inline;
-  margin-right: 15px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #007bff;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-input {
-  margin-bottom: 10px;
-  padding: 8px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  width: 100%;
-  max-width: 300px;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-p {
-  color: #6c757d;
+  background-color: #f4f4f4; /* Light background color */
+  color: #333; /* Dark text color for better contrast */
 }
 
 .App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
+  text-align: center;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #282c34; /* Dark background color */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white; /* White text color for better contrast */
+}
+
+nav {
   width: 100%;
-  height: 100%;
-  color: white;
+  background-color: #333; /* Dark background color for navigation */
+}
+
+.navigation ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigation li {
+  display: flex;
+  align-items: center;
+}
+
+.navigation li a {
+  display: block;
+  color: white; /* White text color for better contrast */
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.navigation li a:hover {
+  background-color: #ddd; /* Light background color for hover */
+  color: black; /* Dark text color for hover */
+}
+
+.nav-left {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #ddb7b7; /* Dark text color for headings */
+}
+
+p {
+  color: #666; /* Slightly lighter text color for paragraphs */
+  line-height: 1.6; /* Better readability with increased line height */
+}
+
+
+.admin-page {
   padding: 20px;
-  box-sizing: border-box;
+}
+
+.admin-page table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-page th, .admin-page td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.admin-page th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.admin-page button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.admin-page button:hover {
+  background-color: #ddd;
 }

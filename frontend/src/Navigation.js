@@ -1,16 +1,37 @@
-// src/Navigation.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Navigation.css';
+import useAuth from './useAuth';
 
 function Navigation() {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await axios.get('/logout', { withCredentials: true });
+    window.location.reload();  // Reload to update login state
+  };
+
+  if (loading) {
+    return null;  // Optionally render a loading indicator
+  }
+
   return (
-    <nav className="Navigation">
+    <nav className="navigation">
       <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/login">Login</Link></li>
-        <li><Link to="/register">Register</Link></li>
-        <li><Link to="/fetch-video">Fetch Video</Link></li>
+        <li className="nav-left">
+          <Link to="/">Home</Link>
+          <Link to="/fetch-video">Fetch Video</Link>
+          {isAdmin && <Link to="/admin">Admin</Link>}
+        </li>
+        <li className="nav-right">
+          {isAuthenticated ? (
+            <a href="#" onClick={handleLogout}>Logout</a>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+        </li>
       </ul>
     </nav>
   );

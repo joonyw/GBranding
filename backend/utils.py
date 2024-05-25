@@ -36,17 +36,28 @@ def get_brand(resp):
     urllib.request.urlretrieve(image_url, image_name)
     return
 
-def get_pic(resp):
+def get_pic(resp, subject):
+    import os, shutil
+    folder = './images'
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
     from openai import OpenAI
     
     p = resp.split(".")
     i = 0
     while i < len(p):
         client = openai.OpenAI(api_key = OPEN_API_KEY,)
-        sent = "a animated picture of sentence number " +str(i + 1)+ " of the following scenario: " + resp
+        sent = "전체 시나리오를 고려하여 " +str(i + 1)+ " 번째를 문장을 가장 잘 나타낼 수 있는 애니메이션 그림 그려줘. 시리오: " + resp + "\n주된 컨셉:" + subject
         image_name = "./images/generated_image_" + str(i) + ".jpg"
         response = client.images.generate(
-            model="dall-e-2",
+            model="dall-e-3",
             prompt=sent,
             size="1024x1024",
             quality="standard",
@@ -68,7 +79,7 @@ def speech(usr_input):
     )
     response.stream_to_file(speech_file_path)
 
-def make_video(image_folder, audio_file, output_video, fps=0.5):
+def make_video(image_folder, audio_file, output_video, fps=0.3):
     image_files = [os.path.join(image_folder, img) for img in sorted(os.listdir(image_folder)) if img.endswith(".jpg")]
     clip = ImageSequenceClip(image_files, fps=fps)
     audio = AudioFileClip(audio_file)

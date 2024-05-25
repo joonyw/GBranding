@@ -1,5 +1,5 @@
-from app import app
-from models import User,db
+from app import app, db
+from models import User
 
 def reset_database():
     with app.app_context():
