@@ -30,14 +30,13 @@ def load_user(user_id):
 @app.route('/')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
     user = User.query.filter_by(email=email).first()
-    print(password)
-    print(password)
     if user and bcrypt.check_password_hash(user.password, password):
         login_user(user)
         return jsonify({'message': 'Login successful', 'admin': user.admin}), 200
@@ -47,15 +46,10 @@ def login():
 
 @app.route('/register', methods=['POST'])
 def register():
-    
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    print(password)
-    # Hash the password using bcrypt
-    # hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    
     admin = data.get('admin', False)
     user = User(username=username, email=email, password=password, admin=admin)
     db.session.add(user)
@@ -68,18 +62,6 @@ def admin():
     if not current_user.admin:
         return redirect(url_for('index'))
     return send_from_directory(app.static_folder, 'index.html')
-# @app.route('/register', methods=['POST'])
-# def register():
-#     data = request.get_json()
-#     username = data.get('username')
-#     email = data.get('email')
-#     print("PASS" + username)
-#     password = data.get('password')
-#     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-#     user = User(username=username, email=email, password=hashed_password)
-#     db.session.add(user)
-#     db.session.commit()
-#     return jsonify({'message': 'User registered successfully'})
 
 @app.route('/logout')
 @login_required
@@ -102,12 +84,10 @@ def submit_text():
     submitted_text = data.get('text', '')
     response_text = create_scenario(submitted_text)
     speech(response_text)
-    get_pic(response_text,submitted_text)
-    # get_brand(response_text)
+    get_pic(response_text,submitted_text,current_user.username)
     response = {
         'message': response_text
     }
-    print("ASDF")
     scenario = Scenario(user_id=current_user.id, user_input=submitted_text, generated_scenario=response_text, video_filename='')
     db.session.add(scenario)
     db.session.commit()
@@ -125,8 +105,25 @@ def get_video():
         db.session.commit()
 
     # return send_from_directory('./', 'output.mp4', as_attachment=False)
-    make_video("./images", "./speech.mp3", "output_video.mp4",0.4)
+    make_video("./images/"+str(current_user.username), "./speech.mp3", "output_video.mp4",0.4)
     return send_from_directory('./', 'output.mp4', as_attachment=False)
+
+@app.route('/user/scenarios', methods=['GET'])
+@login_required
+def get_user_scenarios():
+    scenarios = Scenario.query.filter_by(user_id=current_user.id).all()
+    scenarios_list = [
+        {
+            'id': scenario.id,
+            'user_input': scenario.user_input,
+            'generated_scenario': scenario.generated_scenario,
+            'video_filename': scenario.video_filename,
+            'timestamp': scenario.timestamp
+        } for scenario in scenarios
+    ]
+    return jsonify(scenarios_list)
+
+
 @app.route('/admin/users', methods=['GET'])
 @login_required
 def get_users():

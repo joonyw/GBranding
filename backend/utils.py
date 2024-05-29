@@ -36,9 +36,10 @@ def get_brand(resp):
     urllib.request.urlretrieve(image_url, image_name)
     return
 
-def get_pic(resp, subject):
+def get_pic(resp, subject,id):
     import os, shutil
-    folder = './images'
+    folder = './images/'+str(id)
+    os.makedirs(folder, exist_ok=True)
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         try:
@@ -55,7 +56,7 @@ def get_pic(resp, subject):
     while i < len(p):
         client = openai.OpenAI(api_key = OPEN_API_KEY,)
         sent = "전체 시나리오를 고려하여 " +str(i + 1)+ " 번째를 문장을 가장 잘 나타낼 수 있는 애니메이션 그림 그려줘. 시리오: " + resp + "\n주된 컨셉:" + subject
-        image_name = "./images/generated_image_" + str(i) + ".jpg"
+        image_name = "./images/"+ str(id)+"/generated_image_" + str(i) + ".jpg"
         response = client.images.generate(
             model="dall-e-3",
             prompt=sent,
