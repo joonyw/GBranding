@@ -10,6 +10,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from io import BytesIO
 from PIL import Image
+import json    
 
 app = Flask(__name__, static_folder='build', static_url_path='')
 
@@ -84,6 +85,7 @@ def submit_text():
     submitted_text = data.get('text', '')
     response_text = create_scenario(submitted_text)
     speech(response_text)
+    # get_brand(response_text)
     get_pic(response_text,submitted_text,current_user.username)
     response = {
         'message': response_text
@@ -175,6 +177,39 @@ def get_scenarios():
         } for scenario in scenarios
     ]
     return jsonify(scenarios_list)
+
+@app.route('/branding', methods=['POST'])
+@login_required
+def generate_branding():
+    data = request.get_json()
+    subject = data.get('subject', '')
+    vision = generate_vision(subject)
+    story = generate_story(subject)
+    values = generate_values(subject)
+    # jsondict = json.loads(data)
+    # value_key = list(values.keys())[0]
+    # print(values('value_key'))
+    philosophy = generate_philosophy(subject)
+    strategy = generate_strategy(subject)
+    get_brand(subject)
+    # Simulate branding elements generation
+    branding_elements = {
+        'logo_url': f'./images/brand.jpg',
+        'color_palette': ['#FF5733', '#C70039', '#900C3F', '#581845'],
+        'brand_story': story,
+        'values': [values],
+        'vision': vision,
+        'philosophy': philosophy,
+        'marketing_strategy': [strategy
+        ]
+    }
+    
+    return jsonify({'subject': subject, 'branding_elements': branding_elements})
+@app.route('/images/<filename>')
+def get_logo(filename):
+    return send_from_directory('images', filename)
+
+
 @app.errorhandler(404)
 def not_found(e):
     return send_from_directory(app.static_folder, 'index.html')

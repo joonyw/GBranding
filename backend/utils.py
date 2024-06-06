@@ -38,6 +38,7 @@ def get_brand(resp):
 
 def get_pic(resp, subject,id):
     import os, shutil
+    print("PIC")
     folder = './images/'+str(id)
     os.makedirs(folder, exist_ok=True)
     for filename in os.listdir(folder):
@@ -53,7 +54,8 @@ def get_pic(resp, subject,id):
     
     p = resp.split(".")
     i = 0
-    while i < len(p):
+    # while i < len(p):
+    while i < 3:
         client = openai.OpenAI(api_key = OPEN_API_KEY,)
         sent = "전체 시나리오를 고려하여 " +str(i + 1)+ " 번째를 문장을 가장 잘 나타낼 수 있는 애니메이션 그림 그려줘. 시리오: " + resp + "\n주된 컨셉:" + subject
         image_name = "./images/"+ str(id)+"/generated_image_" + str(i) + ".jpg"
@@ -90,4 +92,63 @@ def make_video(image_folder, audio_file, output_video, fps=0.3):
 
     video.write_videofile("output.mp4", fps=fps, audio_codec="aac", audio_bitrate="192k")
 
-    
+def generate_values(subject):
+    client = openai.OpenAI(
+    api_key = OPEN_API_KEY,
+)
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "come up with a four key values according to this scenario in a json list format:" + subject},
+    ]
+    )
+    return (response.choices[0].message.content)
+
+def generate_vision(subject):
+    client = openai.OpenAI(
+    api_key = OPEN_API_KEY,
+)
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "come up with a brand vision according to this scenario:" + subject},
+    ]
+    )
+    return (response.choices[0].message.content)
+
+
+def generate_philosophy(subject):
+    client = openai.OpenAI(
+    api_key = OPEN_API_KEY,
+)
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "come up with a brand philosophy according to this scenario:" + subject},
+    ]
+    )
+    return (response.choices[0].message.content)
+
+def generate_strategy(subject):
+    client = openai.OpenAI(
+    api_key = OPEN_API_KEY,
+)
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "come up with a brand marketing strategy according to this scenario:" + subject},
+    ]
+    )
+    return (response.choices[0].message.content)
+
+def generate_story(subject):
+    client = openai.OpenAI(
+    api_key = OPEN_API_KEY,
+)
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "come up with a compelling brand story according to this scenario:" + subject},
+    ]
+    )
+    return (response.choices[0].message.content)
