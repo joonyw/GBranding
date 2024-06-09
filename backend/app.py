@@ -98,8 +98,18 @@ def submit_text():
 @app.route('/get-video', methods=['GET'])
 @login_required
 def get_video():
-    video_filename = 'example.mp4'
     
+    import calendar;
+    import time;
+    
+    # gmt stores current gmtime
+    gmt = time.gmtime()
+    print("gmt:-", gmt)
+    
+    # ts stores timestamp
+    ts = calendar.timegm(gmt)
+    print("timestamp:-", ts)
+    video_filename = str(current_user.id)+str(ts)+".mp4"
     # Update the latest scenario with the video filename
     scenario = Scenario.query.filter_by(user_id=current_user.id).order_by(Scenario.timestamp.desc()).first()
     if scenario:
@@ -107,8 +117,8 @@ def get_video():
         db.session.commit()
 
     # return send_from_directory('./', 'output.mp4', as_attachment=False)
-    make_video("./images/"+str(current_user.username), "./speech.mp3", "output_video.mp4",0.4)
-    return send_from_directory('./', 'output.mp4', as_attachment=False)
+    make_video("./images/"+str(current_user.username), "./speech.mp3", "./videos/"+str(current_user.id)+str(ts)+".mp4",0.4)
+    return send_from_directory('./videos', str(current_user.id)+str(ts)+'.mp4', as_attachment=False)
 
 @app.route('/user/scenarios', methods=['GET'])
 @login_required
@@ -184,20 +194,28 @@ def generate_branding():
     data = request.get_json()
     subject = data.get('subject', '')
     vision = generate_vision(subject)
-    story = generate_story(subject)
+    # print(vision)
+    # vision = vision.split(',')
+    
+    # story = generate_story(subject)
     values = generate_values(subject)
+    values = values.split(',')
+
     # jsondict = json.loads(data)
     # value_key = list(values.keys())[0]
     # print(values('value_key'))
+    colors = generate_colors(subject)
+    print(colors)
+    colors=colors.split(',')
     philosophy = generate_philosophy(subject)
     strategy = generate_strategy(subject)
     get_brand(subject)
     # Simulate branding elements generation
     branding_elements = {
         'logo_url': f'./images/brand.jpg',
-        'color_palette': ['#FF5733', '#C70039', '#900C3F', '#581845'],
-        'brand_story': story,
-        'values': [values],
+        'color_palette': colors,
+        # 'brand_story': story,
+        'values': values,
         'vision': vision,
         'philosophy': philosophy,
         'marketing_strategy': [strategy
@@ -208,7 +226,11 @@ def generate_branding():
 @app.route('/images/<filename>')
 def get_logo(filename):
     return send_from_directory('images', filename)
-
+@app.route('/videos/<filename>',  methods=['GET'])
+def get_videos(filename):
+    print("filename")
+    print("ADSFADSF")
+    return send_from_directory('videos', filename)
 
 @app.errorhandler(404)
 def not_found(e):

@@ -5,7 +5,7 @@ from pathlib import Path
 from moviepy.editor import ImageSequenceClip, AudioFileClip, CompositeVideoClip
 
 
-OPEN_API_KEY='sk-'
+OPEN_API_KEY='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'
 def create_scenario(usr_input):
     client = openai.OpenAI(
     api_key = OPEN_API_KEY,
@@ -90,7 +90,19 @@ def make_video(image_folder, audio_file, output_video, fps=0.3):
 
     video = video.set_duration(audio.duration)
 
-    video.write_videofile("output.mp4", fps=fps, audio_codec="aac", audio_bitrate="192k")
+    video.write_videofile(output_video, fps=fps, audio_codec="aac", audio_bitrate="192k")
+
+def generate_colors(subject):
+    client = openai.OpenAI(
+    api_key = OPEN_API_KEY,
+)
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "come up with a four colors (hexcode) for the color palette seperated by commas that most suits the following scenario :" + subject},
+    ]
+    )
+    return (response.choices[0].message.content)
 
 def generate_values(subject):
     client = openai.OpenAI(
@@ -99,7 +111,7 @@ def generate_values(subject):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "come up with a four key values according to this scenario in a json list format:" + subject},
+        {"role": "system", "content": "come up with a four key values in korean according to this scenario seperated by commas:" + subject},
     ]
     )
     return (response.choices[0].message.content)
@@ -111,7 +123,7 @@ def generate_vision(subject):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "come up with a brand vision according to this scenario:" + subject},
+        {"role": "system", "content": "come up with a brand vision in korean according to this scenario:" + subject},
     ]
     )
     return (response.choices[0].message.content)
@@ -124,7 +136,7 @@ def generate_philosophy(subject):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "come up with a brand philosophy according to this scenario:" + subject},
+        {"role": "system", "content": "come up with a brand philosophy in korean according to this scenario:" + subject},
     ]
     )
     return (response.choices[0].message.content)
@@ -136,7 +148,7 @@ def generate_strategy(subject):
     response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "come up with a brand marketing strategy according to this scenario:" + subject},
+        {"role": "system", "content": "come up with 3 short brand marketing strategies in korean seperated by commas according to this scenario:" + subject},
     ]
     )
     return (response.choices[0].message.content)
