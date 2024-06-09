@@ -1,0 +1,89 @@
+/* Ensure the container fills the entire viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Flex container to center content */
+  .register-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #282c34;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  /* Form container with a maximum width and padding */
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    gap: 15px;
+    background-color: #1c1f24;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form group to structure input fields and labels */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  
+  /* Label styling */
+  .form-group label {
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #ddd;
+  }
+  
+  /* Input field styling */
+  .form-group input {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding and border are included in the element's width */
+  }
+  
+  /* Submit button styling */
+  button[type="submit"] {
+    padding: 10px;
+    font-size: 1em;
+    background-color: #61dafb;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #000;
+    width: 100%;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #21a1f1;
+  }
+  
+  /* Paragraph and link styling */
+  p {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #bbb;
+  }
+  
+  p a {
+    color: #61dafb;
+    text-decoration: none;
+  }
+  
+  p a:hover {
+    text-decoration: underline;
+  }
+  

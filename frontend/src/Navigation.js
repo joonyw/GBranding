@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Navigation.css';
@@ -23,6 +23,8 @@ function Navigation() {
         <li className="nav-left">
           <Link to="/">Home</Link>
           <Link to="/fetch-video">Fetch Video</Link>
+          {isAuthenticated && <Link to="/scenarios">Scenarios</Link>}
+          {/* {isAuthenticated && <Link to="/branding">Branding</Link>} */}
           {isAdmin && <Link to="/admin">Admin</Link>}
         </li>
         <li className="nav-right">

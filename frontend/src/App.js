@@ -6,6 +6,8 @@ import Login from './Login';
 import Register from './Register';
 import VideoDisplay from './VideoDisplay';
 import AdminPage from './AdminPage';
+import UserScenarios from './UserScenarios';
+import BrandingPage from './BrandingPage';
 import LoginRequired from './LoginRequired';
 import './App.css';
 
@@ -19,6 +21,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/fetch-video" element={<VideoDisplay />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/scenarios" element={<UserScenarios />} />
+        <Route path="/branding" element={<BrandingPage />} />
         <Route path="/login-required" element={<LoginRequired />} />
         <Route path="/dashboard" element={<Home />} /> {/* Placeholder for dashboard */}
         <Route path="*" element={<Home />} /> {/* Default to Home for any unknown route */}

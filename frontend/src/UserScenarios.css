@@ -1,0 +1,29 @@
+.scenarios-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.scenario-card {
+  background-color: #1c1f24;
+  color: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.scenario-card h2 {
+  margin-top: 0;
+}
+
+.scenario-card p {
+  margin: 10px 0;
+}
+
+.video-player {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}

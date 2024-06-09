@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import './App.css';
+import './Register.css';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -12,47 +12,58 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/register', { username, email, password }, {
-        headers: { 'Content-Type': 'application/json' }
+      const response = await axios.post('/register', {
+        username,
+        email,
+        password,
       });
-      if (response.status === 200) {
+      if (response.data.message === 'User registered successfully') {
         navigate('/login');
       }
     } catch (error) {
-      console.error('Error registering', error);
+      console.error('Registration error', error);
     }
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Register</h1>
-        <form onSubmit={handleSubmit}>
+    <div className="register-container">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
           <input
             type="text"
+            id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
             required
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
           <input
             type="email"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
             required
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
           <input
             type="password"
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
             required
           />
-          <button type="submit">Register</button>
-        </form>
-        <p>Already have an account? <Link to="/login">Login here</Link></p>
-      </header>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+      <p>
+        Already have an account? <Link to="/login">Login here</Link>
+      </p>
     </div>
   );
 }
