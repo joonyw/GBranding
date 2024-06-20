@@ -101,9 +101,7 @@ def submit_text():
 @login_required
 def get_video():
     gmt = time.gmtime()
-    print("gmt:-", gmt)
     ts = calendar.timegm(gmt)
-    print("timestamp:-", ts)
     video_filename = str(current_user.id)+str(ts)+".mp4"
     scenario = Scenario.query.filter_by(user_id=current_user.id).order_by(Scenario.timestamp.desc()).first()
     if scenario:
@@ -180,45 +178,12 @@ def get_scenarios():
     ]
     return jsonify(scenarios_list)
 
-# @app.route('/branding', methods=['POST'])
-# @login_required
-# def generate_branding():
-#     data = request.get_json()
-#     subject = data.get('subject', '')
-#     vision = generate_vision(subject)
-#     values = generate_values(subject)
-#     values = values.split(',')
-#     colors = generate_colors(subject)
-#     print(colors)
-#     colors=colors.split(',')
-#     philosophy = generate_philosophy(subject)
-#     strategy = generate_strategy(subject)
-#     get_brand(subject)
-#     # Simulate branding elements generation
-#     branding_elements = {
-#         'logo_url': f'./images/brand.jpg',
-#         'color_palette': colors,
-#         # 'brand_story': story,
-#         'values': values,
-#         'vision': vision,
-#         'philosophy': philosophy,
-#         'marketing_strategy': [strategy
-#         ]
-#     }
-    
-    # return jsonify({'subject': subject, 'branding_elements': branding_elements})
-
-# @app.route('/branding', methods=['POST'])
-# @login_required
-# def generate_branding():
 @app.route('/branding', methods=['POST'])
 @login_required
 def generate_branding():
     data = request.get_json()
     scenario_id = data.get('scenario_id')
-    print(data)
     existing_branding = Branding.query.filter_by(scenario_id=scenario_id).first()
-    print(existing_branding)
     if existing_branding:
         # Return the existing branding info
         branding_elements = {
@@ -237,7 +202,6 @@ def generate_branding():
     values = generate_values(subject)
     values = values.split(',')
     colors = generate_colors(subject)
-    print(colors)
     colors=colors.split(',')
     philosophy = generate_philosophy(subject)
     strategy = generate_strategy(subject)
