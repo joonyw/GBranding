@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask import Flask, send_from_directory, send_file
 import os
 from utils import *
-from models import db, bcrypt, User, Scenario
+from models import db, bcrypt, User, Scenario, Branding
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_pymongo import PyMongo
@@ -10,7 +10,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from io import BytesIO
 from PIL import Image
-import json    
+import json   
+import calendar;
+import time; 
 
 app = Flask(__name__, static_folder='build', static_url_path='')
 
@@ -98,26 +100,16 @@ def submit_text():
 @app.route('/get-video', methods=['GET'])
 @login_required
 def get_video():
-    
-    import calendar;
-    import time;
-    
-    # gmt stores current gmtime
     gmt = time.gmtime()
     print("gmt:-", gmt)
-    
-    # ts stores timestamp
     ts = calendar.timegm(gmt)
     print("timestamp:-", ts)
     video_filename = str(current_user.id)+str(ts)+".mp4"
-    # Update the latest scenario with the video filename
     scenario = Scenario.query.filter_by(user_id=current_user.id).order_by(Scenario.timestamp.desc()).first()
     if scenario:
         scenario.video_filename = video_filename
         db.session.commit()
-
-    # return send_from_directory('./', 'output.mp4', as_attachment=False)
-    make_video("./images/"+str(current_user.username), "./speech.mp3", "./videos/"+str(current_user.id)+str(ts)+".mp4",0.4)
+    make_video("./images/"+str(current_user.username), "./speech.mp3", "./videos/"+str(current_user.id)+str(ts)+".mp4",1)
     return send_from_directory('./videos', str(current_user.id)+str(ts)+'.mp4', as_attachment=False)
 
 @app.route('/user/scenarios', methods=['GET'])
@@ -188,22 +180,62 @@ def get_scenarios():
     ]
     return jsonify(scenarios_list)
 
+# @app.route('/branding', methods=['POST'])
+# @login_required
+# def generate_branding():
+#     data = request.get_json()
+#     subject = data.get('subject', '')
+#     vision = generate_vision(subject)
+#     values = generate_values(subject)
+#     values = values.split(',')
+#     colors = generate_colors(subject)
+#     print(colors)
+#     colors=colors.split(',')
+#     philosophy = generate_philosophy(subject)
+#     strategy = generate_strategy(subject)
+#     get_brand(subject)
+#     # Simulate branding elements generation
+#     branding_elements = {
+#         'logo_url': f'./images/brand.jpg',
+#         'color_palette': colors,
+#         # 'brand_story': story,
+#         'values': values,
+#         'vision': vision,
+#         'philosophy': philosophy,
+#         'marketing_strategy': [strategy
+#         ]
+#     }
+    
+    # return jsonify({'subject': subject, 'branding_elements': branding_elements})
+
+# @app.route('/branding', methods=['POST'])
+# @login_required
+# def generate_branding():
 @app.route('/branding', methods=['POST'])
 @login_required
 def generate_branding():
     data = request.get_json()
+    scenario_id = data.get('scenario_id')
+    print(data)
+    existing_branding = Branding.query.filter_by(scenario_id=scenario_id).first()
+    print(existing_branding)
+    if existing_branding:
+        # Return the existing branding info
+        branding_elements = {
+            'logo_url': existing_branding.logo_url,
+            'color_palette': existing_branding.color_palette.split(','),
+            'brand_story': existing_branding.brand_story,
+            'values': existing_branding.values.split(','),
+            'vision': existing_branding.vision,
+            'philosophy': existing_branding.philosophy,
+            'marketing_strategy': existing_branding.marketing_strategy.split(',')
+        }
+        return jsonify({'subject': data.get('subject', ''), 'branding_elements': branding_elements})
+
     subject = data.get('subject', '')
     vision = generate_vision(subject)
-    # print(vision)
-    # vision = vision.split(',')
-    
-    # story = generate_story(subject)
     values = generate_values(subject)
     values = values.split(',')
-
-    # jsondict = json.loads(data)
-    # value_key = list(values.keys())[0]
-    # print(values('value_key'))
     colors = generate_colors(subject)
     print(colors)
     colors=colors.split(',')
@@ -221,15 +253,29 @@ def generate_branding():
         'marketing_strategy': [strategy
         ]
     }
-    
+
+    scenario_id = data.get('scenario_id')
+    branding = Branding(
+        scenario_id=scenario_id,
+        logo_url=f'./images/brand.jpg',
+        color_palette=','.join(colors),
+        brand_story='nan',
+        values=','.join(values),
+        vision=vision,
+        philosophy=philosophy,
+        marketing_strategy=''.join(strategy)
+    )
+    db.session.add(branding)
+    db.session.commit()
+
     return jsonify({'subject': subject, 'branding_elements': branding_elements})
+
+
 @app.route('/images/<filename>')
 def get_logo(filename):
     return send_from_directory('images', filename)
 @app.route('/videos/<filename>',  methods=['GET'])
 def get_videos(filename):
-    print("filename")
-    print("ADSFADSF")
     return send_from_directory('videos', filename)
 
 @app.errorhandler(404)

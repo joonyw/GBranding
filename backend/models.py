@@ -27,3 +27,16 @@ class Scenario(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
 
     user = db.relationship('User', backref=db.backref('scenarios', lazy=True))
+
+class Branding(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'), nullable=False)
+    logo_url = db.Column(db.String(500), nullable=False)
+    color_palette = db.Column(db.String(1000), nullable=False)
+    brand_story = db.Column(db.String(2000), nullable=False)
+    values = db.Column(db.String(1000), nullable=False)
+    vision = db.Column(db.String(1000), nullable=False)
+    philosophy = db.Column(db.String(1000), nullable=False)
+    marketing_strategy = db.Column(db.String(2000), nullable=False)
+
+    scenario = db.relationship('Scenario', backref=db.backref('branding', uselist=False))
