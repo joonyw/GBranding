@@ -5,7 +5,7 @@ from pathlib import Path
 from moviepy.editor import ImageSequenceClip, AudioFileClip, CompositeVideoClip
 
 
-OPEN_API_KEY='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'
+OPEN_API_KEY='sk-'
 def create_scenario(usr_input):
     client = openai.OpenAI(
     api_key = OPEN_API_KEY,
