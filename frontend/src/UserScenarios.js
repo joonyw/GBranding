@@ -25,7 +25,7 @@ function UserScenarios() {
   }, []);
 
   const handleBranding = (scenario) => {
-    navigate('/branding', { state: { subject: scenario.generated_scenario } });
+    navigate('/branding', { state: { scenarioId: scenario.id, subject: scenario.generated_scenario } });
   };
 
   if (loading) {

@@ -5,28 +5,28 @@ import './BrandingPage.css';
 
 function BrandingPage() {
   const location = useLocation();
-  const { subject } = location.state || { subject: '' };
+  const { scenarioId, subject } = location.state || { scenarioId: null, subject: '' };
   const [brandingElements, setBrandingElements] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (subject) {
+    if (scenarioId) {
       const fetchBranding = async () => {
         setLoading(true);
         setError(null);
         try {
-          const response = await axios.post('/branding', { subject }, { withCredentials: true });
+          const response = await axios.post('/branding', { scenario_id: scenarioId, subject }, { withCredentials: true });
           setBrandingElements(response.data.branding_elements);
         } catch (error) {
-          setError('Failed to generate branding elements');
+          setError('Failed to fetch branding elements');
         } finally {
           setLoading(false);
         }
       };
       fetchBranding();
     }
-  }, [subject]);
+  }, [scenarioId, subject]);
 
   return (
     <div className="branding-container">
@@ -47,8 +47,7 @@ function BrandingPage() {
               ></div>
             ))}
           </div>
-          <h3>Brand Story</h3>
-          <p>{brandingElements.brand_story}</p>
+
           <h3>Values</h3>
           <ul>
             {brandingElements.values.map((value, index) => (
