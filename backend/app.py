@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask import Flask, send_from_directory, send_file
-import os
+# import os
 from utils import *
 from models import db, bcrypt, User, Scenario, Branding
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
@@ -8,19 +8,31 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from io import BytesIO
-from PIL import Image
-import json   
+# from io import BytesIO
+# from PIL import Image
+# import json   
 import calendar;
 import time; 
+from config import read_config
 
 app = Flask(__name__, static_folder='build', static_url_path='')
+config_file_path = 'config.txt'
 
+# Read the configuration
+config = read_config(config_file_path)
+
+# Extract values
+
+ip_address = config.get('ip_address')
+port = config.get('port')
+db_password= config.get('db_password')
+db_localhost= config.get('db_localhost')
 app.config['SECRET_KEY'] = 'password'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://user:password@localhost/user_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://user:'+db_password+'@'+db_localhost+'/user_db'
 
 db.init_app(app)
 bcrypt.init_app(app)
+
 
 
 login_manager = LoginManager(app)
@@ -246,5 +258,8 @@ def get_videos(filename):
 def not_found(e):
     return send_from_directory(app.static_folder, 'index.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host=ip_address, port=port)
+# if __name__ == '__main__':
+#     app.run(debug=True)

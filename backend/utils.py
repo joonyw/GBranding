@@ -3,8 +3,14 @@ import os
 import urllib
 from pathlib import Path
 from moviepy.editor import ImageSequenceClip, AudioFileClip, CompositeVideoClip
+from config import read_config
 
+config_file_path = 'config.txt'
 
+# Read the configuration
+config = read_config(config_file_path)
+
+api_key = config.get('api_key')
 OPEN_API_KEY='sk-'
 def create_scenario(usr_input):
     client = openai.OpenAI(
